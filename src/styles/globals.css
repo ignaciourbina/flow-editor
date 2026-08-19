@@ -1,0 +1,123 @@
+/**
+ * @module styles/globals
+ * @description Global CSS: Tailwind directives, CSS variables, and base resets.
+ *
+ * @owner Shared
+ */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Canvas */
+    --canvas-bg: #f8fafc;
+    --canvas-grid: #e2e8f0;
+    --canvas-bg-beige: #f5f0e6;
+    --canvas-bg-grey: #f8fafc;
+    --canvas-bg-black: #111827;
+    --canvas-grid-beige: #d6c8b3;
+    --canvas-grid-grey: #e2e8f0;
+    --canvas-grid-black: #374151;
+
+    /* Panels */
+    --panel-bg: #ffffff;
+    --panel-border: #e2e8f0;
+
+    /* Node colors */
+    --node-start: #22c55e;
+    --node-end: #ef4444;
+    --node-process: #3b82f6;
+    --node-decision: #f59e0b;
+    --node-data: #8b5cf6;
+    --node-note: #94a3b8;
+    --node-api: #06b6d4;
+
+    /* Text */
+    --text-primary: #0f172a;
+    --text-secondary: #64748b;
+    --text-on-color: #ffffff;
+  }
+
+  .dark {
+    --canvas-bg: #0f172a;
+    --canvas-grid: #1e293b;
+    --canvas-bg-beige: #f5f0e6;
+    --canvas-bg-grey: #0f172a;
+    --canvas-bg-black: #111827;
+    --canvas-grid-beige: #d6c8b3;
+    --canvas-grid-grey: #1e293b;
+    --canvas-grid-black: #374151;
+
+    --panel-bg: #1e293b;
+    --panel-border: #334155;
+
+    --node-start: #16a34a;
+    --node-end: #dc2626;
+    --node-process: #2563eb;
+    --node-decision: #d97706;
+    --node-data: #7c3aed;
+    --node-note: #64748b;
+    --node-api: #0891b2;
+
+    --text-primary: #f1f5f9;
+    --text-secondary: #94a3b8;
+    --text-on-color: #ffffff;
+  }
+}
+
+@layer components {
+  /* Form elements - extracted from NodeProperties, EdgeProperties */
+  .form-label {
+    @apply block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1;
+  }
+
+  .form-input {
+    @apply w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 px-2 py-1 text-sm text-gray-800 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500;
+  }
+
+  .form-select {
+    @apply w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 px-2 py-1 text-sm text-gray-800 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500;
+  }
+
+  .form-button {
+    @apply flex w-full items-center justify-center gap-2 rounded-md bg-blue-600 px-3 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-40 disabled:pointer-events-none transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500;
+  }
+
+  /* Context menus - extracted from FlowCanvas */
+  .context-menu {
+    @apply fixed z-50 rounded-md border border-gray-200 bg-white shadow-lg dark:border-gray-700 dark:bg-gray-800;
+  }
+
+  .context-menu-item {
+    @apply w-full text-left rounded px-2 py-1.5 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700;
+  }
+
+  .context-menu-option {
+    @apply rounded border border-gray-300 px-2 py-1 text-xs text-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:text-gray-200 dark:hover:bg-gray-700;
+  }
+}
+
+/* ----- Reset ----- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: Inter, system-ui, -apple-system, sans-serif;
+  color: var(--text-primary);
+  background: var(--canvas-bg);
+}
+
+/* React Flow overrides */
+.react-flow__node {
+  font-family: inherit;
+}
