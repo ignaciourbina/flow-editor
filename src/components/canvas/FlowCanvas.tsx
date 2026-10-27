@@ -15,6 +15,7 @@ import {
   type OnNodesChange,
   type OnEdgesChange,
   type OnConnect,
+  type OnSelectionChangeFunc,
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 
@@ -47,6 +48,7 @@ function FlowCanvasInner(): React.JSX.Element {
   const onConnect: OnConnect = useFlowStore((s) => s.onConnect);
   const addNode = useFlowStore((s) => s.addNode);
   const updateNodeData = useFlowStore((s) => s.updateNodeData);
+  const setSelection = useFlowStore((s) => s.setSelection);
   const showCanvasGrid = useUiStore((s) => s.showCanvasGrid);
   const canvasGridStyle = useUiStore((s) => s.canvasGridStyle);
   const canvasBackgroundColor = useUiStore((s) => s.canvasBackgroundColor);
@@ -126,6 +128,17 @@ function FlowCanvasInner(): React.JSX.Element {
     return () => window.removeEventListener(ADD_NODE_EVENT, handleAddNode);
   }, [screenToFlowPosition, addNode]);
 
+  // Mirror React Flow's selection into the store so the property panel can read it.
+  const handleSelectionChange: OnSelectionChangeFunc = useCallback(
+    ({ nodes: selectedNodes, edges: selectedEdges }) => {
+      setSelection(
+        selectedNodes.map((n) => n.id),
+        selectedEdges.map((e) => e.id),
+      );
+    },
+    [setSelection],
+  );
+
   const handleContextMenu = useCallback(
     (event: React.MouseEvent<HTMLDivElement>): void => {
       onPaneContextMenu(event, screenToFlowPosition);
@@ -168,6 +181,7 @@ function FlowCanvasInner(): React.JSX.Element {
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}
+        onSelectionChange={handleSelectionChange}
         nodeTypes={nodeTypes}
         edgeTypes={edgeTypes}
         onDrop={handleDrop}

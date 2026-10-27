@@ -5,7 +5,7 @@ import { useFlowStore } from '@/stores/flowStore';
 
 vi.mock('@xyflow/react', () => ({
 	ReactFlowProvider: ({ children }: { children: React.ReactNode }) => <>{children}</>,
-	ReactFlow: ({ children, onDrop, onDragOver, onEdgeContextMenu, onNodeContextMenu, edges, nodes }: Record<string, unknown>) => (
+	ReactFlow: ({ children, onDrop, onDragOver, onEdgeContextMenu, onNodeContextMenu, onSelectionChange, edges, nodes }: Record<string, unknown>) => (
 		<div
 			data-testid="react-flow"
 			onDrop={onDrop as React.DragEventHandler}
@@ -29,6 +29,15 @@ vi.mock('@xyflow/react', () => ({
 							event,
 							firstNode as { id: string; type: string },
 						);
+					}
+				}}
+			/>
+			<button
+				data-testid="mock-select-first-node"
+				onClick={() => {
+					const firstNode = Array.isArray(nodes) ? nodes[0] : undefined;
+					if (firstNode && onSelectionChange) {
+						(onSelectionChange as (params: { nodes: unknown[]; edges: unknown[] }) => void)({ nodes: [firstNode], edges: [] });
 					}
 				}}
 			/>
@@ -121,6 +130,19 @@ describe('FlowCanvas', () => {
 
 		fireEvent.click(screen.getByRole('menuitem', { name: 'None' }));
 		expect(useFlowStore.getState().edges[0]?.markerEnd).toBeUndefined();
+	});
+
+	it('records the canvas selection in the store', () => {
+		useFlowStore.setState({
+			nodes: [{ id: 'n1', type: 'start', position: { x: 0, y: 0 }, data: { label: 'Start', variant: 'start' } }],
+			edges: [],
+		});
+
+		render(<FlowCanvas />);
+		fireEvent.click(screen.getByTestId('mock-select-first-node'));
+
+		expect(useFlowStore.getState().selectedNodeIds).toEqual(['n1']);
+		expect(useFlowStore.getState().selectedEdgeIds).toEqual([]);
 	});
 
 	it('edits note content from modal opened in node context menu', () => {
