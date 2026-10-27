@@ -7,7 +7,18 @@
  * @dependencies stores/flowStore, stores/uiStore, stores/projectStore
  */
 
-import { Undo2, Redo2, Download, Sun, Moon, Monitor, Command, Settings } from 'lucide-react';
+import {
+  Undo2,
+  Redo2,
+  Download,
+  Sun,
+  Moon,
+  Monitor,
+  Command,
+  Settings,
+  Shapes,
+  SlidersHorizontal,
+} from 'lucide-react';
 import { useFlowStore } from '@/stores/flowStore';
 import { useUIStore } from '@/stores/uiStore';
 import { useProjectStore } from '@/stores/projectStore';
@@ -42,6 +53,7 @@ export function Toolbar(): React.JSX.Element {
   const theme = useUIStore((s) => s.theme);
   const setTheme = useUIStore((s) => s.setTheme);
   const togglePanel = useUIStore((s) => s.togglePanel);
+  const activePanel = useUIStore((s) => s.activePanel);
   const openCommandPalette = useUIStore((s) => s.openCommandPalette);
   const openSettings = useUIStore((s) => s.openSettings);
 
@@ -54,8 +66,17 @@ export function Toolbar(): React.JSX.Element {
       role="toolbar"
       aria-label="Main toolbar"
     >
-      {/* ---- Left: project name ---- */}
+      {/* ---- Left: palette toggle (narrow screens), project name ---- */}
       <div className="flex items-center gap-2 min-w-0">
+        <button
+          type="button"
+          onClick={() => togglePanel('palette')}
+          aria-label="Node palette"
+          aria-pressed={activePanel === 'palette'}
+          className="p-1.5 rounded hover:bg-gray-100 dark:hover:bg-gray-700 md:hidden"
+        >
+          <Shapes className="w-4 h-4" />
+        </button>
         <ProjectName />
       </div>
 
@@ -83,8 +104,18 @@ export function Toolbar(): React.JSX.Element {
         </button>
       </div>
 
-      {/* ---- Right: theme, export, command palette, save status ---- */}
+      {/* ---- Right: properties toggle (narrow screens), theme, export, command palette, save status ---- */}
       <div className="flex items-center gap-2">
+        <button
+          type="button"
+          onClick={() => togglePanel('properties')}
+          aria-label="Properties"
+          aria-pressed={activePanel === 'properties'}
+          className="p-1.5 rounded hover:bg-gray-100 dark:hover:bg-gray-700 md:hidden"
+        >
+          <SlidersHorizontal className="w-4 h-4" />
+        </button>
+
         <button
           type="button"
           onClick={() => setTheme(THEME_CYCLE[theme])}

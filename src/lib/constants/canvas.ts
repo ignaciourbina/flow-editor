@@ -33,3 +33,11 @@ export const VARIANT_MAP: Record<string, BackgroundVariant> = {
   cross: BackgroundVariant.Cross,
   dashed: BackgroundVariant.Lines,
 } as const;
+
+/**
+ * Window event a palette item dispatches when clicked or tapped.
+ *
+ * The canvas listens for it and adds a node of the type in `detail` at the
+ * centre of its visible area, since touch screens cannot drag palette items.
+ */
+export const ADD_NODE_EVENT = 'flow-editor:add-node';

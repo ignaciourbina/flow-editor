@@ -73,7 +73,7 @@ const App: React.FC = () => {
       <Toolbar />
 
       {/* Main editor area */}
-      <div className="flex flex-1 overflow-hidden">
+      <div className="relative flex flex-1 overflow-hidden">
         {/* Left sidebar — Node palette */}
         <NodePalette />
 

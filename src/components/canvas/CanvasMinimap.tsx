@@ -52,7 +52,8 @@ const DEFAULT_COLOR = NODE_COLORS.note; // slate-400
 // ---------------------------------------------------------------------------
 
 /**
- * Minimap panel positioned bottom-right.
+ * Minimap panel positioned bottom-right. Hidden on narrow screens, where it
+ * would cover a large share of the canvas.
  *
  * Uses a `nodeColor` callback to paint each node according to its type,
  * making it easy to distinguish node categories at a glance.
@@ -67,7 +68,7 @@ export function CanvasMinimap(): React.JSX.Element {
       position="bottom-right"
       nodeColor={nodeColor}
       maskColor="rgba(0, 0, 0, 0.08)"
-      className="!shadow-md !rounded-lg !border !border-gray-200 dark:!border-gray-700"
+      className="!hidden md:!block !shadow-md !rounded-lg !border !border-gray-200 dark:!border-gray-700"
       pannable
       zoomable
     />

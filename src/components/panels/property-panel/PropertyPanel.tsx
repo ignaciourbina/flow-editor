@@ -11,6 +11,7 @@
 import React from 'react';
 import { MousePointerClick } from 'lucide-react';
 import { useFlowStore } from '@/stores/flowStore';
+import { useUiStore } from '@/stores/uiStore';
 import { PanelContainer } from '@/components/ui/PanelContainer';
 import { NodeProperties } from './NodeProperties';
 import { EdgeProperties } from './EdgeProperties';
@@ -25,13 +26,14 @@ import { EdgeProperties } from './EdgeProperties';
 export function PropertyPanel(): React.ReactElement {
   const selectedNodeIds = useFlowStore((s) => s.selectedNodeIds);
   const selectedEdgeIds = useFlowStore((s) => s.selectedEdgeIds);
+  const isOpen = useUiStore((s) => s.activePanel === 'properties');
 
   const singleNodeId = selectedNodeIds.length === 1 ? selectedNodeIds[0] : null;
   const singleEdgeId =
     !singleNodeId && selectedEdgeIds?.length === 1 ? selectedEdgeIds[0] : null;
 
   return (
-    <PanelContainer title="Properties" side="right">
+    <PanelContainer title="Properties" side="right" mobileOpen={isOpen}>
       {singleNodeId ? (
         <NodeProperties nodeId={singleNodeId} />
       ) : singleEdgeId ? (

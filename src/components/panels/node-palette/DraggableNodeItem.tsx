@@ -9,6 +9,8 @@
  */
 
 import React, { useCallback } from 'react';
+import { ADD_NODE_EVENT } from '@/lib/constants';
+import { useUiStore } from '@/stores/uiStore';
 
 /** Props for a single draggable palette item. */
 export interface DraggableNodeItemProps {
@@ -24,7 +26,8 @@ export interface DraggableNodeItemProps {
 
 /**
  * A small card representing a node type in the palette.
- * The user drags it onto the canvas to create a new node.
+ * The user drags it onto the canvas to create a new node, or clicks (taps) it
+ * to add one at the centre of the canvas.
  */
 export function DraggableNodeItem({
   nodeType,
@@ -40,10 +43,30 @@ export function DraggableNodeItem({
     [nodeType],
   );
 
+  const handleAdd = useCallback((): void => {
+    window.dispatchEvent(new CustomEvent(ADD_NODE_EVENT, { detail: nodeType }));
+    // On narrow screens the palette covers the canvas; close it to show the new node.
+    const { activePanel, togglePanel } = useUiStore.getState();
+    if (activePanel === 'palette') togglePanel('palette');
+  }, [nodeType]);
+
+  const handleKeyDown = useCallback(
+    (event: React.KeyboardEvent<HTMLDivElement>): void => {
+      if (event.key !== 'Enter' && event.key !== ' ') return;
+      event.preventDefault();
+      handleAdd();
+    },
+    [handleAdd],
+  );
+
   return (
     <div
       draggable="true"
+      role="button"
+      tabIndex={0}
       onDragStart={handleDragStart}
+      onClick={handleAdd}
+      onKeyDown={handleKeyDown}
       className="flex items-center gap-2 rounded-md border border-gray-200 dark:border-gray-700
                  bg-white dark:bg-gray-900 px-2 py-1.5 cursor-grab
                  hover:shadow-sm active:cursor-grabbing select-none transition-shadow"

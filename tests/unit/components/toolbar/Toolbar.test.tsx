@@ -47,6 +47,16 @@ describe('Toolbar', () => {
 		expect(useUiStore.getState().activePanel).toBe('export');
 	});
 
+	it('toggles the palette and properties overlays for narrow screens', () => {
+		render(<Toolbar />);
+		fireEvent.click(screen.getByRole('button', { name: 'Node palette' }));
+		expect(useUiStore.getState().activePanel).toBe('palette');
+		fireEvent.click(screen.getByRole('button', { name: 'Properties' }));
+		expect(useUiStore.getState().activePanel).toBe('properties');
+		fireEvent.click(screen.getByRole('button', { name: 'Properties' }));
+		expect(useUiStore.getState().activePanel).toBeNull();
+	});
+
 	it('cycles theme from system to light', () => {
 		render(<Toolbar />);
 		fireEvent.click(screen.getByRole('button', { name: 'Theme: system' }));

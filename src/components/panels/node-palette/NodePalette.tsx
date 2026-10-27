@@ -13,6 +13,7 @@ import { ChevronDown } from 'lucide-react';
 import { PanelContainer } from '@/components/ui/PanelContainer';
 import { DraggableNodeItem } from './DraggableNodeItem';
 import { NODE_REGISTRY } from '@/components/nodes';
+import { useUiStore } from '@/stores/uiStore';
 
 /** A palette category definition. */
 interface PaletteCategory {
@@ -43,6 +44,8 @@ const CATEGORY_LABELS: Record<string, string> = {
  * Categories are automatically derived from NODE_REGISTRY entries.
  */
 export function NodePalette(): React.ReactElement {
+  const isOpen = useUiStore((s) => s.activePanel === 'palette');
+
   /**
    * Derive palette categories from NODE_REGISTRY.
    * Groups entries by category and transforms them into PaletteCategory format.
@@ -72,7 +75,7 @@ export function NodePalette(): React.ReactElement {
   }, []);
 
   return (
-    <PanelContainer title="Node Palette" side="left">
+    <PanelContainer title="Node Palette" side="left" mobileOpen={isOpen}>
       <Accordion.Root type="multiple" defaultValue={categories.map((c) => c.id)}>
         {categories.map((category) => (
           <Accordion.Item key={category.id} value={category.id} className="mb-2">

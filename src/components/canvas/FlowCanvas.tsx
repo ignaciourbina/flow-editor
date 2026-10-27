@@ -7,7 +7,7 @@
  * @dependencies @xyflow/react, components/nodes, components/edges, stores/flowStore, lib/factories
  */
 
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   ReactFlow,
   ReactFlowProvider,
@@ -27,6 +27,7 @@ import { createNode } from '@/lib/factories';
 import { EDGE_TYPES, isNodeType } from '@/types';
 import type { FlowNode, NoteNodeData } from '@/types';
 import { CANVAS_BACKGROUNDS, CANVAS_GRIDS } from '@/lib/constants/design-tokens';
+import { ADD_NODE_EVENT } from '@/lib/constants/canvas';
 import { useCanvasContextMenus } from '@/hooks';
 
 import { CanvasBackground } from './CanvasBackground';
@@ -107,6 +108,24 @@ function FlowCanvasInner(): React.JSX.Element {
     [screenToFlowPosition, addNode],
   );
 
+  // Palette clicks and taps add the node at the centre of the visible canvas.
+  const wrapperRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const handleAddNode = (event: Event): void => {
+      const rawType = (event as CustomEvent<string>).detail;
+      const rect = wrapperRef.current?.getBoundingClientRect();
+      if (!rect || !isNodeType(rawType)) return;
+
+      const position = screenToFlowPosition({
+        x: rect.left + rect.width / 2,
+        y: rect.top + rect.height / 2,
+      });
+      addNode(createNode(rawType, position));
+    };
+    window.addEventListener(ADD_NODE_EVENT, handleAddNode);
+    return () => window.removeEventListener(ADD_NODE_EVENT, handleAddNode);
+  }, [screenToFlowPosition, addNode]);
+
   const handleContextMenu = useCallback(
     (event: React.MouseEvent<HTMLDivElement>): void => {
       onPaneContextMenu(event, screenToFlowPosition);
@@ -138,6 +157,7 @@ function FlowCanvasInner(): React.JSX.Element {
 
   return (
     <div
+      ref={wrapperRef}
       className="h-full w-full"
       style={{ backgroundColor: CANVAS_BACKGROUNDS[canvasBackgroundColor] }}
       onContextMenu={handleContextMenu}
